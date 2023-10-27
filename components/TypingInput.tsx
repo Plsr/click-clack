@@ -10,7 +10,7 @@ type TypingResult = {
 type TypedText = Record<number, TypingResult[]>;
 
 const quote =
-  "My mama always said life was like a box of chocolates. You never know what you're gonna get.";
+  "My a mama always said life was like a box of chocolates. You never know what you're gonna get.";
 
 export const TypingInput = () => {
   const splitQuote = quote.split(" ");
@@ -34,7 +34,7 @@ export const TypingInput = () => {
 
     if (
       inputCharacters[inputCharacters.length - 1] === " " &&
-      inputCharacters.join(" ").trim().length > 1
+      inputCharacters.join("").trim().length > 0
     ) {
       console.log("eow");
       event.target.value = "";
@@ -69,31 +69,81 @@ export const TypingInput = () => {
       const typingDuration =
         (new Date(typingEndedAt).getTime() -
           new Date(typingStartedAt.current).getTime()) /
-        60;
-      console.log(typingDuration);
-      const typingSpeed = typingDuration / splitQuote.length;
-      console.log("typingSpeed", typingSpeed);
+        60_000;
+      const typingSpeed = splitQuote.length / typingDuration;
       typingStartedAt.current = null;
       console.log("End of quote");
+      console.log("typingSpeed", typingSpeed);
+      event.target.value = "";
     }
   };
 
   return (
     <>
       <div>
-        {Object.values(typedText).map((word, index) =>
-          word.map((letter, index2) => (
-            <span
-              style={{ color: letter.correct ? "green" : "red" }}
-              key={index + index2}
-            >
-              {letter.value}
-            </span>
-          ))
-        )}
+        {splitQuote.map((word, index) => (
+          <>
+            {word.split("").map((letter, index2) => {
+              const letterTyped = typedText[index]?.[index2];
+
+              let color = "grey";
+
+              if (letterTyped) {
+                color = letterTyped.correct ? "green" : "red";
+              }
+
+              let isCurrentLetter = false;
+              let isTrailingSpace = false;
+              const isCurrentWord = currentWordIndex === index;
+              if (isCurrentWord) {
+                isCurrentLetter =
+                  typedText[index]?.length === index2 ||
+                  (!typedText[index] && index2 === 0);
+
+                isTrailingSpace =
+                  typedText[index]?.length > index2 &&
+                  index2 === splitQuote[index].length - 1;
+              }
+
+              return (
+                <div
+                  className="inline-flex flex-row  h-[24px]"
+                  key={`${index}${index2}`}
+                >
+                  {isCurrentLetter && (
+                    <div className="w-[2px] h-[18px] bg-slate-400" />
+                  )}
+                  <span
+                    style={{
+                      color,
+                      // backgroundColor: isCurrentLetter
+                      //   ? "lightgrey"
+                      //   : "transparent",
+                      // textDecoration: isTrailingSpace ? "underline" : "none",
+                    }}
+                  >
+                    {letter}
+                  </span>
+                  {isTrailingSpace && (
+                    <div className="w-[2px] h-[18px] bg-slate-400" />
+                  )}
+                </div>
+              );
+            })}{" "}
+            <span> </span>
+          </>
+        ))}
       </div>
-      <div>{quote}</div>
-      <textarea className="text-black" onChange={handleInputChange} />
+      <textarea
+        style={{
+          position: "absolute",
+          zIndex: "-1",
+          width: "1px",
+          height: "1px",
+        }}
+        autoFocus
+        onChange={handleInputChange}
+      />
       <div>User input</div>
     </>
   );
