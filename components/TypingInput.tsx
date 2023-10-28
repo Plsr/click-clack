@@ -28,10 +28,6 @@ export const TypingInput = () => {
       typingStartedAt.current = new Date().toISOString();
     }
 
-    //if (inputCharacters.length < 1) {
-    //  return;
-    //}
-
     if (
       inputCharacters[inputCharacters.length - 1] === " " &&
       inputCharacters.join("").trim().length > 0
@@ -80,7 +76,7 @@ export const TypingInput = () => {
 
   return (
     <>
-      <div>
+      <div className="font-mono flex">
         {splitQuote.map((word, index) => (
           <>
             {word.split("").map((letter, index2) => {
@@ -89,7 +85,7 @@ export const TypingInput = () => {
               let color = "grey";
 
               if (letterTyped) {
-                color = letterTyped.correct ? "green" : "red";
+                color = letterTyped.correct ? "white" : "red";
               }
 
               let isCurrentLetter = false;
@@ -107,30 +103,20 @@ export const TypingInput = () => {
 
               return (
                 <div
-                  className="inline-flex flex-row  h-[24px]"
+                  className="inline-flex flex-row items-center h-[24px]"
                   key={`${index}${index2}`}
                 >
                   {isCurrentLetter && (
-                    <div className="w-[2px] h-[18px] bg-slate-400" />
+                    <div className="w-[2px] h-[18px] bg-slate-400 animate-pulse" />
                   )}
-                  <span
-                    style={{
-                      color,
-                      // backgroundColor: isCurrentLetter
-                      //   ? "lightgrey"
-                      //   : "transparent",
-                      // textDecoration: isTrailingSpace ? "underline" : "none",
-                    }}
-                  >
-                    {letter}
-                  </span>
+                  <span>{letter}</span>
                   {isTrailingSpace && (
-                    <div className="w-[2px] h-[18px] bg-slate-400" />
+                    <div className="w-[2px] h-[18px] bg-slate-400 animate-pulse" />
                   )}
                 </div>
               );
             })}{" "}
-            <span> </span>
+            <div className="inline-block w-[8px] shrink-0" />
           </>
         ))}
       </div>
@@ -144,7 +130,6 @@ export const TypingInput = () => {
         autoFocus
         onChange={handleInputChange}
       />
-      <div>User input</div>
     </>
   );
 };
