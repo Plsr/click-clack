@@ -1,19 +1,16 @@
 "use client";
 
+import { TestResult } from "@/types/testResult";
+import { TypedLetter, TypedText } from "@/types/typedText";
 import { useRef, useState } from "react";
 
-type TypingResult = {
-  value: string;
-  correct: boolean;
+type TypingInputProps = {
+  onFinish: (result: TestResult) => void;
+  quote: string[];
 };
 
-type TypedText = Record<number, TypingResult[]>;
-
-const quote =
-  "My a mama always said life was like a box of chocolates. You never know what you're gonna get.";
-
-export const TypingInput = () => {
-  const splitQuote = quote.split(" ");
+export const TypingInput = ({ onFinish, quote }: TypingInputProps) => {
+  const splitQuote = quote;
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [typedText, setTypedText] = useState<TypedText>({});
@@ -37,7 +34,7 @@ export const TypingInput = () => {
       setCurrentWordIndex(currentWordIndex + 1);
     }
 
-    let results: TypingResult[] = [];
+    let results: TypedLetter[] = [];
     for (let i = 0; i < inputCharacters.length; i++) {
       // User typed more characters than the word is long
       if (i > targetCharacters.length) {
@@ -62,15 +59,11 @@ export const TypingInput = () => {
       results.length === splitQuote[currentWordIndex].length
     ) {
       const typingEndedAt = new Date().toISOString();
-      const typingDuration =
-        (new Date(typingEndedAt).getTime() -
-          new Date(typingStartedAt.current).getTime()) /
-        60_000;
-      const typingSpeed = splitQuote.length / typingDuration;
-      typingStartedAt.current = null;
-      console.log("End of quote");
-      console.log("typingSpeed", typingSpeed);
-      event.target.value = "";
+      onFinish({
+        userInput: typedText,
+        startedAt: typingStartedAt.current,
+        finishedAt: typingEndedAt,
+      });
     }
   };
 
