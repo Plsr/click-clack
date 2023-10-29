@@ -109,7 +109,7 @@ export const TypingInput = () => {
                   {isCurrentLetter && (
                     <div className="w-[2px] h-[18px] bg-slate-400 animate-pulse" />
                   )}
-                  <span>{letter}</span>
+                  <span style={{ color }}>{letter}</span>
                   {isTrailingSpace && (
                     <div className="w-[2px] h-[18px] bg-slate-400 animate-pulse" />
                   )}
