@@ -69,9 +69,12 @@ export const TypingInput = ({ onFinish, quote }: TypingInputProps) => {
 
   return (
     <>
-      <div className="font-mono flex">
+      <div className="font-mono flex flex-wrap max-w-2xl">
         {splitQuote.map((word, index) => (
-          <>
+          <div
+            className="flex flex-nowrap items-center justify-center"
+            key={index}
+          >
             {word.split("").map((letter, index2) => {
               const letterTyped = typedText[index]?.[index2];
 
@@ -96,7 +99,7 @@ export const TypingInput = ({ onFinish, quote }: TypingInputProps) => {
 
               return (
                 <div
-                  className="inline-flex flex-row items-center h-[24px]"
+                  className="inline-flex flex-row items-center justify-center"
                   key={`${index}${index2}`}
                 >
                   {isCurrentLetter && (
@@ -110,7 +113,7 @@ export const TypingInput = ({ onFinish, quote }: TypingInputProps) => {
               );
             })}{" "}
             <div className="inline-block w-[8px] shrink-0" />
-          </>
+          </div>
         ))}
       </div>
       <textarea
